@@ -57,7 +57,6 @@ Cette base de données est conçue pour stocker des informations sur divers comp
 | Marque           | TEXT       | Marque du composant                   |
 | Modele           | TEXT       | Modèle du composant                   |
 | Type             | TEXT       | Type de composant (RAM, SSD, etc.)    |
-| Capacite         | INTEGER    | Capacité (en Go/To)                  |
 | FrequenceVitesse | INTEGER    | Fréquence/Vitesse (en MHz/Mo/s)      |
 | Interface        | TEXT       | Interface (DDR4, PCIe, etc.)          |
 | DateDeSortie     | DATE       | Date de sortie                        |
