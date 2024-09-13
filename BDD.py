@@ -4,8 +4,8 @@ import os
 from datetime import datetime
 
 # Fichiers de configuration et de log
-CONFIG_FILE = 'config.json'
 LOGS_DIR = 'logs'
+CONFIG_FILE = os.path.join(LOGS_DIR, 'config.json')
 COMMAND_LOG_FILE = os.path.join(LOGS_DIR, 'command_log.txt')
 DEFAULT_LOG_FILE = os.path.join(LOGS_DIR, 'log.txt')
 
@@ -61,7 +61,8 @@ def afficher_menu():
     print("4. Créer une nouvelle table")
     print("5. Supprimer une table")
     print("6. Configurer les paramètres")
-    print("7. Quitter")
+    print("7. Ouvrir le dossier des logs")
+    print("8. Quitter")
 
 # Fonction pour afficher le menu des tables disponibles
 def afficher_menu_tables(conn):
@@ -229,6 +230,16 @@ def supprimer_table(conn):
         conn.commit()
         print("Table supprimée avec succès.")
 
+# Fonction pour ouvrir le dossier des logs
+def ouvrir_logs():
+    """
+    Ouvre le dossier des logs dans l'explorateur de fichiers.
+    """
+    if os.name == 'nt':  # Pour Windows
+        os.startfile(LOGS_DIR)
+    else:
+        print("Système d'exploitation non pris en charge.")
+
 # Fonction pour configurer les paramètres de l'application
 def configurer_parametres(conn):
     """
@@ -293,6 +304,8 @@ def main():
             case '6':
                 configurer_parametres(conn)
             case '7':
+                ouvrir_logs()
+            case '8':
                 break
             case _:
                 print("Option invalide.")
@@ -303,4 +316,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#Ajouter config.json => logs, ouverture fichier / dossier, lister all table, présentation (tableau), clear console, menu choix, création base de donné, readme
+#Ajouter correction récupération fichier, ouverture fichier / dossier, lister all table, présentation (tableau), clear console, menu choix, création base de donné, readme
