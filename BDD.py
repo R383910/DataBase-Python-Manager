@@ -303,4 +303,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#Ajouter ouverture fichier / dossier, lister all table, présentation (tableau), clear console, menu choix, création base de donné, readme
+#Ajouter config.json => logs, ouverture fichier / dossier, lister all table, présentation (tableau), clear console, menu choix, création base de donné, readme
