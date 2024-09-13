@@ -340,6 +340,7 @@ def main():
             case '8':
                 nettoyer_console()
             case '9':
+                nettoyer_console()
                 break
             case _:
                 print("Option invalide.")
@@ -349,5 +350,3 @@ def main():
 # Point d'entrée du script
 if __name__ == "__main__":
     main()
-
-#Ajouter présentation (tableau), readme
