@@ -1,7 +1,7 @@
 import sqlite3
 
 # Établir une connexion à la base de données
-bdd = sqlite3.connect('C:/Users/Gabriel/DataGripProjects/test/materiel_informatique.sqlite')
+bdd = sqlite3.connect('/materiel_informatique.sqlite')
 
 # Créer un curseur
 cursor = bdd.cursor()
