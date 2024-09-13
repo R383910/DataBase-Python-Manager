@@ -62,7 +62,8 @@ def afficher_menu():
     print("5. Supprimer une table")
     print("6. Configurer les paramètres")
     print("7. Ouvrir le dossier des logs")
-    print("8. Quitter")
+    print("8. Nettoyer la console")
+    print("9. Quitter")
 
 # Fonction pour afficher le menu des tables disponibles
 def afficher_menu_tables(conn):
@@ -240,23 +241,47 @@ def ouvrir_logs():
     else:
         print("Système d'exploitation non pris en charge.")
 
+# Fonction pour afficher le menu des paramètres
+def afficher_menu_parametres():
+    """
+    Affiche le menu des paramètres disponibles.
+    """
+    print("1. Enregistrer les résultats des commandes de récupération")
+    print("2. Chemin du fichier de journalisation")
+    print("3. Chemin du fichier de journalisation des commandes")
+    print("4. Chemin de la base de données")
+    print("5. Retour")
+
 # Fonction pour configurer les paramètres de l'application
 def configurer_parametres(conn):
     """
     Permet à l'utilisateur de configurer les paramètres de l'application, tels que l'enregistrement des résultats des commandes de récupération et les fichiers de log.
     """
     config = lire_config()
-    enregistrer = input("Voulez-vous enregistrer les résultats des commandes de récupération ? (oui/non): ").lower() == 'oui'
-    config['enregistrer_recuperation'] = enregistrer
-    if enregistrer:
-        log_file = input(f"Entrez le chemin du fichier de journalisation (par défaut '{DEFAULT_LOG_FILE}'): ") or DEFAULT_LOG_FILE
-        config['log_file'] = log_file
-    command_log_file = input(f"Entrez le chemin du fichier de journalisation des commandes (par défaut '{COMMAND_LOG_FILE}'): ") or COMMAND_LOG_FILE
-    config['command_log_file'] = command_log_file
 
-    # Demander le chemin de la base de données
-    db_path = input(f"Entrez le chemin de la base de données (actuel: '{config.get('db_path', '')}'): ") or config.get('db_path', '')
-    config['db_path'] = db_path
+    while True:
+        afficher_menu_parametres()
+        choix = input("Choisissez le paramètre à modifier: ")
+        match choix:
+            case '1':
+                enregistrer = input("Voulez-vous enregistrer les résultats des commandes de récupération ? (oui/non): ").lower() == 'oui'
+                config['enregistrer_recuperation'] = enregistrer
+                if enregistrer:
+                    log_file = input(f"Entrez le chemin du fichier de journalisation (par défaut '{DEFAULT_LOG_FILE}'): ") or DEFAULT_LOG_FILE
+                    config['log_file'] = log_file
+            case '2':
+                log_file = input(f"Entrez le chemin du fichier de journalisation (par défaut '{DEFAULT_LOG_FILE}'): ") or DEFAULT_LOG_FILE
+                config['log_file'] = log_file
+            case '3':
+                command_log_file = input(f"Entrez le chemin du fichier de journalisation des commandes (par défaut '{COMMAND_LOG_FILE}'): ") or COMMAND_LOG_FILE
+                config['command_log_file'] = command_log_file
+            case '4':
+                db_path = input(f"Entrez le chemin de la base de données (actuel: '{config.get('db_path', '')}'): ") or config.get('db_path', '')
+                config['db_path'] = db_path
+            case '5':
+                break
+            case _:
+                print("Option invalide.")
 
     ecrire_config(config)
     print("Paramètres configurés avec succès.")
@@ -271,6 +296,13 @@ def demander_chemin_db():
     config['db_path'] = db_path
     ecrire_config(config)
     return db_path
+
+# Fonction pour nettoyer la console
+def nettoyer_console():
+    """
+    Nettoie la console.
+    """
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 # Fonction principale pour exécuter le menu de l'application
 def main():
@@ -306,6 +338,8 @@ def main():
             case '7':
                 ouvrir_logs()
             case '8':
+                nettoyer_console()
+            case '9':
                 break
             case _:
                 print("Option invalide.")
@@ -316,4 +350,4 @@ def main():
 if __name__ == "__main__":
     main()
 
-#Ajouter correction récupération fichier, ouverture fichier / dossier, lister all table, présentation (tableau), clear console, menu choix, création base de donné, readme
+#Ajouter présentation (tableau), readme

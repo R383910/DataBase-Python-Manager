@@ -1,95 +1,54 @@
-# Base de Données de Matériel Informatique
+# SQLite Database Manager
 
-Cette base de données est conçue pour stocker des informations sur divers composants informatiques tels que les GPU, CPU, NPU, et autres composants comme la RAM et les SSD.
+This program is a SQLite database manager that allows users to manage their databases interactively. It offers features to retrieve, add, delete information, create and delete tables, configure settings, and more.
 
-## Tables
+## Features
 
-### GPUs
+- **Retrieve Information** : Allows retrieving information from a specific table based on ID or name.
+- **Add Information** : Allows adding information to a specific table.
+- **Delete Information** : Allows deleting information from a specific table.
+- **Create New Table** : Allows creating a new table with columns specified by the user.
+- **Delete Table** : Allows deleting an existing table.
+- **Configure Settings** : Allows configuring various application settings, such as recording the results of retrieval commands and log files.
+- **Open Logs Folder** : Opens the logs folder in the file explorer.
+- **Clear Console** : Clears the console for better readability.
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du GPU                            |
-| Marque           | TEXT       | Marque du GPU                         |
-| Modele           | TEXT       | Modèle du GPU                         |
-| Frequence        | INTEGER    | Fréquence de base (en MHz)            |
-| VRAM             | INTEGER    | Mémoire vidéo (en Go)                |
-| TypeDeMemoire    | TEXT       | Type de mémoire (GDDR6, HBM2, etc.)  |
-| Consommation     | INTEGER    | Consommation électrique (en watts)   |
-| DateDeSortie     | DATE       | Date de sortie                        |
-| Prix             | REAL       | Prix (en €)                           |
+## Prerequisites
 
-### CPUs
+- Python 3.x
+- SQLite3 (included with Python)
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du CPU                            |
-| Marque           | TEXT       | Marque du CPU                         |
-| Modele           | TEXT       | Modèle du CPU                         |
-| Frequence        | INTEGER    | Fréquence de base (en MHz)            |
-| NbCoeur          | INTEGER    | Nombre de cœurs                       |
-| NbThreads        | INTEGER    | Nombre de threads                     |
-| DateDeSortie     | DATE       | Date de sortie                        |
-| Prix             | REAL       | Prix (en €)                           |
+## Installation
 
-### NPUs
+1. Clone the repository:
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du NPU                            |
-| Marque           | TEXT       | Marque du NPU                         |
-| Modele           | TEXT       | Modèle du NPU                         |
-| Frequence        | INTEGER    | Fréquence de base (en MHz)            |
-| NbCoeur          | INTEGER    | Nombre de cœurs                       |
-| Memoire          | INTEGER    | Mémoire (en Go)                       |
-| TypeMemoire      | TEXT       | Type de mémoire                       |
-| DateDeSortie     | DATE       | Date de sortie                        |
-| Prix             | REAL       | Prix (en €)                           |
+    ```bash
+    git clone https://github.com/your-username/your-repository.git
+    cd your-repository
+    ```
 
-### AutresComposants (RAM, SSD, etc.)
+2. Ensure you have Python 3.x installed on your machine.
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du composant                      |
-| Marque           | TEXT       | Marque du composant                   |
-| Modele           | TEXT       | Modèle du composant                   |
-| Type             | TEXT       | Type de composant (RAM, SSD, etc.)    |
-| FrequenceVitesse | INTEGER    | Fréquence/Vitesse (en MHz/Mo/s)      |
-| Interface        | TEXT       | Interface (DDR4, PCIe, etc.)          |
-| DateDeSortie     | DATE       | Date de sortie                        |
-| Prix             | REAL       | Prix (en €)                           |
+## Usage
 
-### Fabricants
+1. Run the main script:
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du fabricant                      |
-| SiteWeb          | TEXT       | Site web du fabricant                 |
+    ```bash
+    python main.py
+    ```
 
-### TypesMemoire
+2. Follow the on-screen instructions to navigate the menu and use the different features.
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du type de mémoire               |
-| Description      | TEXT       | Description du type de mémoire        |
+## Project Structure
 
-### Interfaces
+- `main.py` : The main script containing the application menu and functions to manage the database.
+- `logs/` : Folder containing log files.
+- `config.json` : Configuration file to store application settings.
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom de l'interface                   |
-| Description      | TEXT       | Description de l'interface            |
+## Configuration
 
-### TypesComposants
+On the first run, the program will ask you to specify the database path. You can also configure other settings by selecting the "Configure Settings" option in the main menu.
 
-| Colonne          | Type       | Description                           |
-|------------------|------------|---------------------------------------|
-| Id               | INTEGER    | Clé primaire                         |
-| Nom              | TEXT       | Nom du type de composant              |
-| Description      | TEXT       | Description du type de composant      |
+---
+
+Thank you for using this SQLite Database Manager!
