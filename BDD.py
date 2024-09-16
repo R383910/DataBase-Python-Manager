@@ -320,22 +320,30 @@ def main():
     conn = sqlite3.connect(db_path)
 
     while True:
+        nettoyer_console()
         afficher_menu()
         choix = input("Choisissez une option: ")
         match choix:
             case '1':
+                nettoyer_console()
                 recuperer_informations(conn)
             case '2':
+                nettoyer_console()
                 ajouter_informations(conn)
             case '3':
+                nettoyer_console()
                 supprimer_informations(conn)
             case '4':
+                nettoyer_console()
                 creer_table(conn)
             case '5':
+                nettoyer_console()
                 supprimer_table(conn)
             case '6':
+                nettoyer_console()
                 configurer_parametres(conn)
             case '7':
+                nettoyer_console()
                 ouvrir_logs()
             case '8':
                 nettoyer_console()
