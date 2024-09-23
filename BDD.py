@@ -37,18 +37,20 @@ def obtenir_tables(conn):
     """
     Obtient la liste des tables dans la base de données.
     """
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    return [table[0] for table in cursor.fetchall()]
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        return [table[0] for table in cursor.fetchall()]
 
 # Fonction pour obtenir les colonnes d'une table spécifique
 def obtenir_colonnes(conn, table):
     """
     Obtient les colonnes d'une table spécifique.
     """
-    cursor = conn.cursor()
-    cursor.execute(f"PRAGMA table_info({table})")
-    return [col[1] for col in cursor.fetchall()]
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute(f"PRAGMA table_info({table})")
+        return [col[1] for col in cursor.fetchall()]
 
 # Fonction pour afficher le menu principal
 def afficher_menu():
@@ -94,30 +96,31 @@ def obtenir_informations(conn, table, choix, enregistrer=False):
     """
     Récupère et affiche les informations d'une table spécifique en fonction de l'ID ou du nom fourni par l'utilisateur.
     """
-    cursor = conn.cursor()
-    if choix.isdigit():
-        cursor.execute(f"SELECT * FROM {table} WHERE Id = ?", (choix,))
-    else:
-        cursor.execute(f"SELECT * FROM {table} WHERE Nom = ?", (choix,))
+    with conn:
+        cursor = conn.cursor()
+        if choix.isdigit():
+            cursor.execute(f"SELECT * FROM {table} WHERE Id = ?", (choix,))
+        else:
+            cursor.execute(f"SELECT * FROM {table} WHERE Nom = ?", (choix,))
 
-    result = cursor.fetchone()
-    if result:
-        columns = obtenir_colonnes(conn, table)
-        print("\nInformations récupérées :")
-        for col, val in zip(columns, result):
-            print(f"{col}: {val}")
-        print()
+        result = cursor.fetchone()
+        if result:
+            columns = obtenir_colonnes(conn, table)
+            print("\nInformations récupérées :")
+            for col, val in zip(columns, result):
+                print(f"{col}: {val}")
+            print()
 
-        if enregistrer:
-            config = lire_config()
-            log_file = config.get('log_file', DEFAULT_LOG_FILE)
-            with open(log_file, 'a') as f:
-                f.write(f"Table: {table}\n")
-                for col, val in zip(columns, result):
-                    f.write(f"{col}: {val}\n")
-                f.write("============================================\n")
-    else:
-        print("Aucune information trouvée.")
+            if enregistrer:
+                config = lire_config()
+                log_file = config.get('log_file', DEFAULT_LOG_FILE)
+                with open(log_file, 'a') as f:
+                    f.write(f"Table: {table}\n")
+                    for col, val in zip(columns, result):
+                        f.write(f"{col}: {val}\n")
+                    f.write("============================================\n")
+        else:
+            print("Aucune information trouvée.")
 
 # Fonction pour enregistrer les commandes exécutées dans un fichier de log
 def log_command(action, command, success):
@@ -149,6 +152,7 @@ def recuperer_informations(conn):
             command = f"SELECT * FROM {table} WHERE Nom = '{choix}'"
         log_command("get", command, True)
         obtenir_informations(conn, table, choix, enregistrer)
+        input("Appuyez sur Entrée pour continuer...")  # Ajouter une pause ici
 
 # Fonction pour ajouter des informations dans une table spécifique
 def ajouter_informations(conn):
@@ -337,43 +341,40 @@ def main():
         db_path = demander_chemin_db()
 
     # Connexion à la base de données
-    conn = sqlite3.connect(db_path)
-
-    while True:
-        nettoyer_console()
-        afficher_menu()
-        choix = input("Choisissez une option: ")
-        match choix:
-            case '1':
-                nettoyer_console()
-                recuperer_informations(conn)
-            case '2':
-                nettoyer_console()
-                ajouter_informations(conn)
-            case '3':
-                nettoyer_console()
-                supprimer_informations(conn)
-            case '4':
-                nettoyer_console()
-                creer_table(conn)
-            case '5':
-                nettoyer_console()
-                supprimer_table(conn)
-            case '6':
-                nettoyer_console()
-                configurer_parametres(conn)
-            case '7':
-                nettoyer_console()
-                ouvrir_logs()
-            case '8':
-                nettoyer_console()
-            case '9':
-                nettoyer_console()
-                break
-            case _:
-                print("Option invalide.")
-
-    conn.close()
+    with sqlite3.connect(db_path) as conn:
+        while True:
+            nettoyer_console()
+            afficher_menu()
+            choix = input("Choisissez une option: ")
+            match choix:
+                case '1':
+                    nettoyer_console()
+                    recuperer_informations(conn)
+                case '2':
+                    nettoyer_console()
+                    ajouter_informations(conn)
+                case '3':
+                    nettoyer_console()
+                    supprimer_informations(conn)
+                case '4':
+                    nettoyer_console()
+                    creer_table(conn)
+                case '5':
+                    nettoyer_console()
+                    supprimer_table(conn)
+                case '6':
+                    nettoyer_console()
+                    configurer_parametres(conn)
+                case '7':
+                    nettoyer_console()
+                    ouvrir_logs()
+                case '8':
+                    nettoyer_console()
+                case '9':
+                    nettoyer_console()
+                    break
+                case _:
+                    print("Option invalide.")
 
 # Point d'entrée du script
 if __name__ == "__main__":
