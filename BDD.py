@@ -166,11 +166,15 @@ def ajouter_informations(conn):
         placeholders = ", ".join(["?"] * len(columns))
         command = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({placeholders})"
         cursor = conn.cursor()
-        cursor.execute(command, values)
 
-        log_command("add", command, True)
-        conn.commit()
-        print("Information ajoutée avec succès.")
+        try:
+            cursor.execute(command, values)
+            log_command("add", command, True)
+            conn.commit()
+            print("Information ajoutée avec succès.")
+        except sqlite3.Error as e:
+            log_command("add", command, False)
+            print(f"Erreur lors de l'ajout des informations : {e}")
 
 # Fonction pour supprimer des informations d'une table spécifique
 def supprimer_informations(conn):
@@ -185,15 +189,19 @@ def supprimer_informations(conn):
             command = f"DELETE FROM {table} WHERE Id = {choix}"
         else:
             command = f"DELETE FROM {table} WHERE Nom = '{choix}'"
-        cursor.execute(command)
 
-        if cursor.rowcount > 0:
-            log_command("delete", command, True)
-            conn.commit()
-            print("Information supprimée avec succès.")
-        else:
+        try:
+            cursor.execute(command)
+            if cursor.rowcount > 0:
+                log_command("delete", command, True)
+                conn.commit()
+                print("Information supprimée avec succès.")
+            else:
+                log_command("delete", command, False)
+                print("Aucune information trouvée.")
+        except sqlite3.Error as e:
             log_command("delete", command, False)
-            print("Aucune information trouvée.")
+            print(f"Erreur lors de la suppression des informations : {e}")
 
 # Fonction pour créer une nouvelle table
 def creer_table(conn):
@@ -201,6 +209,10 @@ def creer_table(conn):
     Permet à l'utilisateur de créer une nouvelle table.
     """
     nom_table = input("Entrez le nom de la nouvelle table: ")
+    if not nom_table.isidentifier():
+        print("Le nom de la table doit être un identifiant valide.")
+        return
+
     nb_colonnes = int(input("Entrez le nombre de colonnes: "))
     colonnes = []
     for i in range(nb_colonnes):
@@ -210,11 +222,15 @@ def creer_table(conn):
 
     command = f"CREATE TABLE {nom_table} ({', '.join(colonnes)})"
     cursor = conn.cursor()
-    cursor.execute(command)
 
-    log_command("create", command, True)
-    conn.commit()
-    print("Table créée avec succès.")
+    try:
+        cursor.execute(command)
+        log_command("create", command, True)
+        conn.commit()
+        print("Table créée avec succès.")
+    except sqlite3.Error as e:
+        log_command("create", command, False)
+        print(f"Erreur lors de la création de la table : {e}")
 
 # Fonction pour supprimer une table
 def supprimer_table(conn):
@@ -225,11 +241,15 @@ def supprimer_table(conn):
     if table:
         command = f"DROP TABLE {table}"
         cursor = conn.cursor()
-        cursor.execute(command)
 
-        log_command("drop", command, True)
-        conn.commit()
-        print("Table supprimée avec succès.")
+        try:
+            cursor.execute(command)
+            log_command("drop", command, True)
+            conn.commit()
+            print("Table supprimée avec succès.")
+        except sqlite3.Error as e:
+            log_command("drop", command, False)
+            print(f"Erreur lors de la suppression de la table : {e}")
 
 # Fonction pour ouvrir le dossier des logs
 def ouvrir_logs():
