@@ -23,7 +23,7 @@ This program is a SQLite database manager that allows users to manage their data
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/your-repository.git
+    git clone https://github.com/R383910/DataBase-Python-Manager.git
     cd your-repository
     ```
 
