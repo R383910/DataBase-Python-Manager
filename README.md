@@ -34,7 +34,7 @@ This program is a SQLite database manager that allows users to manage their data
 1. Run the main script:
 
     ```bash
-    python main.py
+    python BDD.py
     ```
 
 2. Follow the on-screen instructions to navigate the menu and use the different features.
