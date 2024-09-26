@@ -8,11 +8,9 @@ LOGS_DIR = 'logs'
 CONFIG_FILE = os.path.join(LOGS_DIR, 'config.json')
 COMMAND_LOG_FILE = os.path.join(LOGS_DIR, 'command_log.txt')
 DEFAULT_LOG_FILE = os.path.join(LOGS_DIR, 'log.txt')
-LANG_FILE = os.path.join(LOGS_DIR, 'lang.json')
 
 # Créer le sous-dossier 'logs' s'il n'existe pas
-if not os.path.exists(LOGS_DIR):
-    os.makedirs(LOGS_DIR)
+os.makedirs(LOGS_DIR, exist_ok=True)
 
 # Fonction pour lire la configuration depuis un fichier JSON
 def lire_config():
@@ -35,11 +33,22 @@ def ecrire_config(config):
 
 # Fonction pour lire les chaînes de caractères localisées
 def lire_lang(lang):
+    lang_file = os.path.join(LOGS_DIR, f'{lang}.json')
+    if os.path.exists(lang_file):
+        with open(lang_file, 'r') as f:
+            lang_dict = json.load(f)
+            lang_dict['lang'] = lang  # Définir la clé lang
+            return lang_dict
+    return {}
+
+# Fonction pour recharger la langue
+def recharger_langue():
     """
-    Lit les chaînes de caractères localisées depuis un fichier JSON.
+    Recharge la langue actuelle depuis le fichier de configuration.
     """
-    with open(LANG_FILE, 'r') as f:
-        return json.load(f).get(lang, {})
+    config = lire_config()
+    lang_code = config.get('lang', 'fr')  # Langue par défaut : français
+    return lire_lang(lang_code)
 
 # Fonction pour obtenir la liste des tables dans la base de données
 def obtenir_tables(conn):
@@ -376,6 +385,11 @@ def ouvrir_logs(lang):
     """
     if os.name == 'nt':  # Pour Windows
         os.startfile(LOGS_DIR)
+    elif os.name == 'posix':  # Pour Linux et macOS
+        if os.uname().sysname == 'Darwin':  # macOS
+            os.system(f'open {LOGS_DIR}')
+        else:  # Linux
+            os.system(f'xdg-open {LOGS_DIR}')
     else:
         print(lang["systeme_non_supporte"])
     nettoyer_console()
@@ -402,7 +416,6 @@ def configurer_parametres(conn, lang):
     config = lire_config()
     while True:
         afficher_menu_parametres(lang)
-        print(config.get('lang'))
         choix = input(lang["choisir_option"])
         match choix:
             case '1':
@@ -421,7 +434,7 @@ def configurer_parametres(conn, lang):
                 db_path = demander_chemin_db(lang)
                 config['db_path'] = db_path
             case '5':
-                changer_langue(lang)
+                lang = changer_langue(lang)  # Mettre à jour la langue
             case '6':
                 ouvrir_logs(lang)
             case '7':
@@ -433,25 +446,20 @@ def configurer_parametres(conn, lang):
     config = lire_config()
     print(lang["parametres_configures"])
     nettoyer_console()
+    return lang  # Retourner la langue mise à jour
 
 # Fonction pour changer la langue
 def changer_langue(lang):
-    """
-    Permet à l'utilisateur de changer la langue de l'application.
-    """
     config = lire_config()
     nouvelle_langue = input("Choisissez la langue (fr/en): ").lower()
     if nouvelle_langue in ["fr", "en"]:
-        config["lang"] = nouvelle_langue
-        ecrire_config(config)
+        config["lang"] = nouvelle_langue  # Mettre à jour la valeur de la langue dans le fichier config.json
+        ecrire_config(config)  # Enregistrer la configuration
         print(f"Langue changée en {nouvelle_langue}.")
-        # Mettre à jour la variable lang
-        lang = lire_lang(nouvelle_langue)
-        print(f"lang = {lang}")
-        input(lang["appuyer_entree"])
+        return lire_lang(nouvelle_langue)  # Retourner la nouvelle langue
     else:
         print("Langue non reconnue.")
-        input(lang["appuyer_entree"])
+        return lang  # Retourner la langue actuelle si la nouvelle langue n'est pas valide
 
 # Fonction pour demander le chemin de la base de données lors du premier lancement
 def demander_chemin_db(lang):
@@ -505,13 +513,9 @@ def nettoyer_console():
 
 # Fonction principale pour exécuter le menu de l'application
 def main():
-    """
-    Fonction principale qui exécute le menu de l'application et gère les choix de l'utilisateur.
-    """
     config = lire_config()
     db_path = config.get('db_path')
-    lang_code = config.get('lang', 'fr')  # Langue par défaut : français
-    lang = lire_lang(lang_code)
+    lang = recharger_langue()  # Charger la langue initiale
 
     # Demander le chemin de la base de données lors du premier lancement
     if not db_path:
@@ -521,7 +525,6 @@ def main():
     with sqlite3.connect(db_path) as conn:
         while True:
             afficher_menu(lang)
-            print(config.get('lang'))
             choix = input(lang["choisir_option"])
             match choix:
                 case '1':
@@ -571,8 +574,10 @@ def main():
                                 print(lang["option_invalide"])
                                 nettoyer_console()
                 case '4':
-                    configurer_parametres(conn, lang)
+                    lang = configurer_parametres(conn, lang)  # Mettre à jour la langue après la configuration des paramètres
                 case '5':
+                    config['lang'] = lang['lang']  # Enregistrer la langue choisie dans le fichier de configuration
+                    ecrire_config(config)  # Enregistrer la configuration
                     break
                 case _:
                     print(lang["option_invalide"])
