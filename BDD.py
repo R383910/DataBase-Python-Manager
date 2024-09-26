@@ -400,9 +400,9 @@ def configurer_parametres(conn, lang):
     Permet à l'utilisateur de configurer les paramètres de l'application, tels que l'enregistrement des résultats des commandes de récupération et les fichiers de log.
     """
     config = lire_config()
-
     while True:
         afficher_menu_parametres(lang)
+        print(config.get('lang'))
         choix = input(lang["choisir_option"])
         match choix:
             case '1':
@@ -430,6 +430,7 @@ def configurer_parametres(conn, lang):
                 print(lang["option_invalide"])
 
     ecrire_config(config)
+    config = lire_config()
     print(lang["parametres_configures"])
     nettoyer_console()
 
@@ -441,11 +442,16 @@ def changer_langue(lang):
     config = lire_config()
     nouvelle_langue = input("Choisissez la langue (fr/en): ").lower()
     if nouvelle_langue in ["fr", "en"]:
-        config['lang'] = nouvelle_langue
+        config["lang"] = nouvelle_langue
         ecrire_config(config)
         print(f"Langue changée en {nouvelle_langue}.")
+        # Mettre à jour la variable lang
+        lang = lire_lang(nouvelle_langue)
+        print(f"lang = {lang}")
+        input(lang["appuyer_entree"])
     else:
         print("Langue non reconnue.")
+        input(lang["appuyer_entree"])
 
 # Fonction pour demander le chemin de la base de données lors du premier lancement
 def demander_chemin_db(lang):
@@ -515,6 +521,7 @@ def main():
     with sqlite3.connect(db_path) as conn:
         while True:
             afficher_menu(lang)
+            print(config.get('lang'))
             choix = input(lang["choisir_option"])
             match choix:
                 case '1':
