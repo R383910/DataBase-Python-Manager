@@ -1,85 +1,84 @@
-# Nom du Projet
+# Project Name
 
-Ce projet est une application de gestion de bases de données SQLite avec des fonctionnalités de gestion des informations, des tables et des bases de données. Il inclut également des options de configuration et de localisation.
+This project is a SQLite database management application with features for managing information, tables, and databases. It also includes configuration and localization options.
 
-## Table des matières
+## Table of Contents
 
 - [Installation](#installation)
-- [Fonctionnalités](#fonctionnalités)
-- [Utilisation](#utilisation)
+- [Features](#features)
+- [Usage](#usage)
 - [Configuration](#configuration)
-- [Localisation](#localisation)
-- [Licence](#licence)
+- [Localization](#localization)
+- [License](#license)
 
 ## Installation
 
-Pour utiliser ce projet, vous devez avoir Python installé sur votre machine. Vous pouvez cloner ce dépôt et exécuter le script principal.
+To use this project, you need to have Python installed on your machine. You can clone this repository and run the main script.
 
 ```bash
 git clone https://github.com/R383910/DataBase-Python-Manager
-cd votre-projet
+cd your-project
 python main.py
 ```
-# Fonctionnalités
+# Features
 
-- **Gestion des informations** : Récupérer, ajouter et supprimer des informations dans les tables.
-- **Gestion des tables** : Créer, supprimer et récupérer toutes les informations d'une table.
-- **Gestion des bases de données** : Créer et supprimer des bases de données.
-- **Configuration** : Configurer les paramètres de l'application, tels que l'enregistrement des résultats des commandes de récupération et les fichiers de log.
-- **Localisation** : Changer la langue de l'interface utilisateur.
+- **Information Management**: Retrieve, add, and delete information in tables.
+- **Table Management**: Create, delete, and retrieve all information from a table.
+- **Database Management**: Create and delete databases.
+- **Configuration**: Configure application settings, such as logging the results of retrieval commands and log files.
+- **Localization**: Change the language of the user interface.
 
-# Utilisation
+# Usage
 
-Le script principal `main.py` affiche un menu interactif permettant de naviguer entre les différentes fonctionnalités de l'application. Voici un aperçu des menus disponibles :
+The main script `main.py` displays an interactive menu to navigate between the different features of the application. Here is an overview of the available menus:
 
-## Menu principal
+## Main Menu
 
-- Gérer les informations
-- Gérer les tables
-- Gérer les bases de données
-- Configurer les paramètres
-- Quitter
+- **Manage Information**
+- **Manage Tables**
+- **Manage Databases**
+- **Configure Settings**
+- **Quit**
 
-## Sous-menu de gestion des informations
+## Information Management Submenu
 
-- Récupérer des informations
-- Ajouter des informations
-- Supprimer des informations
-- Retour
+- **Retrieve Information**
+- **Add Information**
+- **Delete Information**
+- **Back**
 
-## Sous-menu de gestion des tables
+## Table Management Submenu
 
-- Créer une table
-- Supprimer une table
-- Récupérer toutes les informations d'une table
-- Retour
+- **Create Table**
+- **Delete Table**
+- **Retrieve All Information from a Table**
+- **Back**
 
-## Sous-menu de gestion des bases de données
+## Database Management Submenu
 
-- Créer une base de données
-- Supprimer une base de données
-- Retour
+- **Create Database**
+- **Delete Database**
+- **Back**
 
 ## Configuration
 
-Le fichier de configuration `config.json` est utilisé pour stocker les paramètres de l'application. Vous pouvez modifier ce fichier pour ajuster les paramètres selon vos besoins.
+The configuration file `config.json` is used to store the application settings. You can modify this file to adjust the settings according to your needs.
 
-## Localisation
+## Localization
 
-Le projet supporte la localisation en français (fr) et en anglais (en). Vous pouvez changer la langue de l'interface utilisateur via le menu de configuration.
+The project supports localization in French (fr) and English (en). You can change the language of the user interface via the configuration menu.
 
-# Licence
+# License
 
-Ce projet est sous licence Creative Commons Attribution 4.0 International (CC BY 4.0).
+This project is licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) license.
 
-Vous êtes libre de :
+You are free to:
 
-- **Partager** — copier et redistribuer le matériel dans n'importe quel format ou support
-- **Adapter** — remixer, transformer et créer à partir du matériel pour tout usage, y compris commercial.
+- **Share** — copy and redistribute the material in any medium or format
+- **Adapt** — remix, transform, and build upon the material for any purpose, even commercially.
 
-Sous les conditions suivantes :
+Under the following terms:
 
-- **Attribution** — Vous devez créditer Gabriel Messaoudi comme suit : "Ce projet utilise DataBase-Python-Manager créé par Gabriel Messaoudi, sous licence CC BY 4.0."
+- **Attribution** — You must give appropriate credit, provide a link to the license, and indicate if changes were made. You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
 
-Pour plus d'informations, voir la licence complète à :
-[Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)
+For more information, see the full license at: [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/)
