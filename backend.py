@@ -2,6 +2,8 @@ import sqlite3
 import json
 import os
 from datetime import datetime
+from frontend import obtenir_table, afficher_menu_parametres
+from utils import nettoyer_console
 
 # Fichiers de configuration et de log
 LOGS_DIR = 'logs'
@@ -50,16 +52,6 @@ def recharger_langue():
     lang_code = config.get('lang', 'fr')  # Langue par défaut : français
     return lire_lang(lang_code)
 
-# Fonction pour obtenir la liste des tables dans la base de données
-def obtenir_tables(conn):
-    """
-    Obtient la liste des tables dans la base de données.
-    """
-    with conn:
-        cursor = conn.cursor()
-        cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        return [table[0] for table in cursor.fetchall()]
-
 # Fonction pour obtenir les colonnes d'une table spécifique
 def obtenir_colonnes(conn, table):
     """
@@ -69,75 +61,6 @@ def obtenir_colonnes(conn, table):
         cursor = conn.cursor()
         cursor.execute(f"PRAGMA table_info({table})")
         return [col[1] for col in cursor.fetchall()]
-
-# Fonction pour afficher le menu principal
-def afficher_menu(lang):
-    """
-    Affiche le menu principal de l'application.
-    """
-    nettoyer_console()
-    print(lang["menu_principal"])
-    print("1. " + lang["gerer_informations"])
-    print("2. " + lang["gerer_tables"])
-    print("3. " + lang["gerer_bases"])
-    print("4. " + lang["configurer_parametres"])
-    print("5. " + lang["quitter"])
-
-# Fonction pour afficher le sous-menu de gestion des informations
-def afficher_sous_menu_gestion(lang):
-    """
-    Affiche le sous-menu de gestion des informations.
-    """
-    nettoyer_console()
-    print("1. " + lang["recuperer_informations"])
-    print("2. " + lang["ajouter_informations"])
-    print("3. " + lang["supprimer_informations"])
-    print("4. " + lang["retour"])
-
-# Fonction pour afficher le sous-menu de gestion des tables
-def afficher_sous_menu_tables(lang):
-    """
-    Affiche le sous-menu de gestion des tables.
-    """
-    nettoyer_console()
-    print("1. " + lang["creer_table"])
-    print("2. " + lang["supprimer_table"])
-    print("3. " + lang["recuperer_toute_table"])
-    print("4. " + lang["retour"])
-
-# Fonction pour afficher le sous-menu de gestion des bases de données
-def afficher_sous_menu_bases(lang):
-    """
-    Affiche le sous-menu de gestion des bases de données.
-    """
-    nettoyer_console()
-    print("1. " + lang["creer_base"])
-    print("2. " + lang["supprimer_base"])
-    print("3. " + lang["retour"])
-
-# Fonction pour afficher le menu des tables disponibles
-def afficher_menu_tables(conn, lang):
-    """
-    Affiche le menu des tables disponibles dans la base de données.
-    """
-    tables = obtenir_tables(conn)
-    for i, table in enumerate(tables, start=1):
-        print(f"{i}. {table}")
-
-# Fonction pour obtenir le nom de la table choisie par l'utilisateur
-def obtenir_table(conn, lang):
-    """
-    Permet à l'utilisateur de choisir une table parmi celles disponibles dans la base de données.
-    """
-    afficher_menu_tables(conn, lang)
-    choix_table = input(lang["choisir_table"])
-
-    tables = obtenir_tables(conn)
-    if choix_table.isdigit() and 1 <= int(choix_table) <= len(tables):
-        return tables[int(choix_table) - 1]
-    else:
-        print(lang["table_non_reconnue"])
-        return None
 
 # Fonction pour obtenir et afficher les informations d'une table spécifique
 def obtenir_informations(conn, table, choix, enregistrer=False, lang=None):
@@ -394,20 +317,6 @@ def ouvrir_logs(lang):
         print(lang["systeme_non_supporte"])
     nettoyer_console()
 
-# Fonction pour afficher le menu des paramètres
-def afficher_menu_parametres(lang):
-    """
-    Affiche le menu des paramètres disponibles.
-    """
-    nettoyer_console()
-    print("1. " + lang["enregistrer_recuperation"])
-    print("2. " + lang["chemin_log"])
-    print("3. " + lang["chemin_log_commandes"])
-    print("4. " + lang["chemin_db"])
-    print("5. " + lang["changer_langue"])
-    print("6. " + lang["ouvrir_logs"])
-    print("7. " + lang["retour"])
-
 # Fonction pour configurer les paramètres de l'application
 def configurer_parametres(conn, lang):
     """
@@ -503,86 +412,3 @@ def detecter_bases_de_donnees():
             if file.endswith('.db'):
                 bases_de_donnees.append(os.path.join(root, file))
     return bases_de_donnees
-
-# Fonction pour nettoyer la console
-def nettoyer_console():
-    """
-    Nettoie la console.
-    """
-    os.system('cls' if os.name == 'nt' else 'clear')
-
-# Fonction principale pour exécuter le menu de l'application
-def main():
-    config = lire_config()
-    db_path = config.get('db_path')
-    lang = recharger_langue()  # Charger la langue initiale
-
-    # Demander le chemin de la base de données lors du premier lancement
-    if not db_path:
-        db_path = demander_chemin_db(lang)
-
-    # Connexion à la base de données
-    with sqlite3.connect(db_path) as conn:
-        while True:
-            afficher_menu(lang)
-            choix = input(lang["choisir_option"])
-            match choix:
-                case '1':
-                    while True:
-                        afficher_sous_menu_gestion(lang)
-                        sous_choix = input(lang["choisir_option"])
-                        match sous_choix:
-                            case '1':
-                                recuperer_informations(conn, lang)
-                            case '2':
-                                ajouter_informations(conn, lang)
-                            case '3':
-                                supprimer_informations(conn, lang)
-                            case '4':
-                                break
-                            case _:
-                                print(lang["option_invalide"])
-                                nettoyer_console()
-                case '2':
-                    while True:
-                        afficher_sous_menu_tables(lang)
-                        sous_choix = input(lang["choisir_option"])
-                        match sous_choix:
-                            case '1':
-                                creer_table(conn, lang)
-                            case '2':
-                                supprimer_table(conn, lang)
-                            case '3':
-                                recuperer_toute_table(conn, lang)
-                            case '4':
-                                break
-                            case _:
-                                print(lang["option_invalide"])
-                                nettoyer_console()
-                case '3':
-                    while True:
-                        afficher_sous_menu_bases(lang)
-                        sous_choix = input(lang["choisir_option"])
-                        match sous_choix:
-                            case '1':
-                                creer_base_de_donnees(lang)
-                            case '2':
-                                supprimer_base_de_donnees(lang)
-                            case '3':
-                                break
-                            case _:
-                                print(lang["option_invalide"])
-                                nettoyer_console()
-                case '4':
-                    lang = configurer_parametres(conn, lang)  # Mettre à jour la langue après la configuration des paramètres
-                case '5':
-                    config['lang'] = lang['lang']  # Enregistrer la langue choisie dans le fichier de configuration
-                    ecrire_config(config)  # Enregistrer la configuration
-                    break
-                case _:
-                    print(lang["option_invalide"])
-                    nettoyer_console()
-
-# Point d'entrée du script
-if __name__ == "__main__":
-    main()
