@@ -12,7 +12,12 @@ def afficher_menu(lang):
     print("2. " + lang["gerer_tables"])
     print("3. " + lang["gerer_bases"])
     print("4. " + lang["configurer_parametres"])
-    print("5. " + lang["quitter"])
+    print("5. " + lang["sauvegarder_restaurer"])
+    print("6. " + lang["exporter_importer"])
+    print("7. " + lang["recherche_avancee"])
+    print("8. " + lang["gerer_utilisateurs"])
+    print("9. " + lang["automatisation_taches"])
+    print("10. " + lang["quitter"])
 
 # Fonction pour afficher le sous-menu de gestion des informations
 def afficher_sous_menu_gestion(lang):

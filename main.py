@@ -1,7 +1,6 @@
-import sqlite3
-from utils import nettoyer_console
-from frontend import afficher_menu, afficher_sous_menu_gestion, afficher_sous_menu_tables, afficher_sous_menu_bases
-from backend import lire_config, ecrire_config, recharger_langue, demander_chemin_db, recuperer_informations, ajouter_informations, supprimer_informations, creer_table, supprimer_table, recuperer_toute_table, creer_base_de_donnees, supprimer_base_de_donnees, configurer_parametres
+from frontend import *
+from backend import *
+
 
 # Fonction principale pour exécuter le menu de l'application
 def main():
@@ -68,6 +67,50 @@ def main():
                 case '4':
                     lang = configurer_parametres(conn, lang)  # Mettre à jour la langue après la configuration des paramètres
                 case '5':
+                    # Sauvegarder et restaurer la base de données
+                    backup_path = input("Entrez le chemin de sauvegarde : ")
+                    sauvegarder_base_de_donnees(db_path, backup_path)
+                    restore_path = input("Entrez le chemin de restauration : ")
+                    restaurer_base_de_donnees(restore_path, db_path)
+                case '6':
+                    # Exporter et importer des données en JSON
+                    table = obtenir_table(conn, lang)
+                    if table:
+                        export_path = input("Entrez le chemin d'exportation : ")
+                        exporter_table_en_json(conn, table, export_path)
+                        import_path = input("Entrez le chemin d'importation : ")
+                        importer_table_depuis_json(conn, table, import_path)
+                case '7':
+                    # Recherche avancée
+                    table = obtenir_table(conn, lang)
+                    if table:
+                        criteres = {}
+                        while True:
+                            col = input("Entrez le nom de la colonne (ou 'fin' pour terminer) : ")
+                            if col.lower() == 'fin':
+                                break
+                            val = input(f"Entrez la valeur pour la colonne {col} : ")
+                            criteres[col] = val
+                        recherche_avancee(conn, table, criteres)
+                case '8':
+                    # Gérer les utilisateurs
+                    creer_table_utilisateurs(conn)
+                    nom = input("Entrez le nom de l'utilisateur : ")
+                    mot_de_passe = input("Entrez le mot de passe : ")
+                    role = input("Entrez le rôle (admin/utilisateur) : ")
+                    ajouter_utilisateur(conn, nom, mot_de_passe, role)
+                    nom = input("Entrez le nom de l'utilisateur pour l'authentification : ")
+                    mot_de_passe = input("Entrez le mot de passe pour l'authentification : ")
+                    user = authentifier_utilisateur(conn, nom, mot_de_passe)
+                    if user:
+                        print(f"Authentification réussie : {user}")
+                    else:
+                        print("Authentification échouée.")
+                case '9':
+                    # Automatisation des tâches
+                    interval = int(input("Entrez l'intervalle en secondes : "))
+                    tache_planifiee(interval, exemple_tache)
+                case '10':
                     config['lang'] = lang['lang']  # Enregistrer la langue choisie dans le fichier de configuration
                     ecrire_config(config)  # Enregistrer la configuration
                     break

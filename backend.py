@@ -412,3 +412,139 @@ def detecter_bases_de_donnees():
             if file.endswith('.db'):
                 bases_de_donnees.append(os.path.join(root, file))
     return bases_de_donnees
+
+def sauvegarder_base_de_donnees(db_path, backup_path):
+    """
+    Sauvegarde la base de données à un emplacement spécifié.
+    """
+    try:
+        with open(db_path, 'rb') as src, open(backup_path, 'wb') as dst:
+            dst.write(src.read())
+        print(f"Sauvegarde réussie : {backup_path}")
+    except Exception as e:
+        print(f"Erreur lors de la sauvegarde : {e}")
+
+def restaurer_base_de_donnees(backup_path, db_path):
+    """
+    Restaure la base de données à partir d'une sauvegarde.
+    """
+    try:
+        with open(backup_path, 'rb') as src, open(db_path, 'wb') as dst:
+            dst.write(src.read())
+        print(f"Restauration réussie : {db_path}")
+    except Exception as e:
+        print(f"Erreur lors de la restauration : {e}")
+
+def exporter_table_en_json(conn, table, file_path):
+    """
+    Exporte les données d'une table en JSON.
+    """
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT * FROM {table}")
+        columns = [description[0] for description in cursor.description]
+        data = cursor.fetchall()
+
+        json_data = []
+        for row in data:
+            json_data.append(dict(zip(columns, row)))
+
+        with open(file_path, 'w') as f:
+            json.dump(json_data, f, indent=4)
+
+        print(f"Exportation réussie : {file_path}")
+
+def importer_table_depuis_json(conn, table, file_path):
+    """
+    Importe les données d'un fichier JSON dans une table.
+    """
+    with open(file_path, 'r') as f:
+        data = json.load(f)
+
+    with conn:
+        cursor = conn.cursor()
+        columns = ', '.join(data[0].keys())
+        placeholders = ', '.join(['?'] * len(data[0]))
+
+        for row in data:
+            values = tuple(row.values())
+            cursor.execute(f"INSERT INTO {table} ({columns}) VALUES ({placeholders})", values)
+
+        conn.commit()
+        print(f"Importation réussie : {file_path}")
+
+def recherche_avancee(conn, table, criteres):
+    """
+    Recherche des enregistrements en fonction de critères spécifiques.
+    """
+    with conn:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM {table} WHERE "
+        conditions = []
+        values = []
+
+        for col, val in criteres.items():
+            conditions.append(f"{col} = ?")
+            values.append(val)
+
+        query += " AND ".join(conditions)
+        cursor.execute(query, values)
+        results = cursor.fetchall()
+
+        if results:
+            columns = [description[0] for description in cursor.description]
+            for row in results:
+                print(dict(zip(columns, row)))
+        else:
+            print("Aucun résultat trouvé.")
+
+def creer_table_utilisateurs(conn):
+    """
+    Crée la table des utilisateurs.
+    """
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute("""
+        CREATE TABLE IF NOT EXISTS utilisateurs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nom TEXT NOT NULL,
+            mot_de_passe TEXT NOT NULL,
+            role TEXT NOT NULL
+        )
+        """)
+        conn.commit()
+
+def ajouter_utilisateur(conn, nom, mot_de_passe, role):
+    """
+    Ajoute un nouvel utilisateur.
+    """
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO utilisateurs (nom, mot_de_passe, role) VALUES (?, ?, ?)", (nom, mot_de_passe, role))
+        conn.commit()
+        print("Utilisateur ajouté avec succès.")
+
+def authentifier_utilisateur(conn, nom, mot_de_passe):
+    """
+    Authentifie un utilisateur.
+    """
+    with conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM utilisateurs WHERE nom = ? AND mot_de_passe = ?", (nom, mot_de_passe))
+        user = cursor.fetchone()
+        if user:
+            return user
+        else:
+            return None
+
+def tache_planifiee(interval, fonction, *args, **kwargs):
+    """
+    Exécute une fonction à intervalles réguliers.
+    """
+    while True:
+        fonction(*args, **kwargs)
+        time.sleep(interval)
+
+# Exemple d'utilisation
+def exemple_tache():
+    print("Tâche exécutée.")
